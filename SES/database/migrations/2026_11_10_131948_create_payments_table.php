@@ -21,7 +21,6 @@ return new class extends Migration
             $table->foreignId('payment_method_id')->constrained('payment_methods', 'payment_method_id')->restrictOnDelete()->cascadeOnUpdate();
             $table->timestamp('payment_datetime')->useCurrent();
             $table->foreignId('recorded_by')->nullable()->constrained('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->index(['student_id', 'school_year', 'semester'], 'idx_payments_student_term');
         });
 
         if (DB::getDriverName() === 'mysql') {

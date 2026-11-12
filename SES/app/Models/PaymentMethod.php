@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property bool $method_available
+ */
 class PaymentMethod extends Model
 {
     protected $primaryKey = 'payment_method_id';

@@ -33,8 +33,8 @@
             </div>
             <section class="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ([
-                    ['Student records', 'Maintain verified student profiles and program assignments.'],
-                    ['Enrollment', 'Enroll, drop, or perform a same-term drop/add transaction.'],
+                    ['Student records', 'Maintain student profiles and program assignments.'],
+                    ['Enrollment', 'Register students in available sections and update enrollment statuses.'],
                     ['Payments', 'Record term payments with an auditable processing history.'],
                     ['Reports', 'Filter student, enrollment, section, and payment reports.'],
                 ] as [$title, $description])

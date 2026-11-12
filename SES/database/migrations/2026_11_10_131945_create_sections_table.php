@@ -25,7 +25,6 @@ return new class extends Migration
             $table->string('room', 10)->nullable();
             $table->unsignedInteger('max_capacity')->default(40);
             $table->unique(['section_code', 'school_year', 'semester'], 'uq_sections_term');
-            $table->index(['school_year', 'semester'], 'idx_sections_term');
         });
 
         if (DB::getDriverName() === 'mysql') {

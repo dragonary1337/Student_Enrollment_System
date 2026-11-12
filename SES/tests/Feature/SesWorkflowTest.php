@@ -83,6 +83,14 @@ test('pending accounts cannot sign in and operators cannot access academic setup
     $this->actingAs($operator)->get(route('students.index'))->assertOk();
 });
 
+test('drop and add workflow is not available in the milestone baseline', function () {
+    $operator = User::factory()->create(['role' => 'Operator']);
+
+    $this->actingAs($operator)
+        ->post('/enrollments/1/drop-add', ['section_id' => 2])
+        ->assertNotFound();
+});
+
 test('administrators can create students and invalid year levels are rejected', function () {
     $admin = User::factory()->create();
     $department = Department::query()->create([
@@ -129,11 +137,10 @@ test('the last active administrator cannot be demoted', function () {
     $this->assertDatabaseHas('users', ['id' => $admin->id, 'role' => 'Admin', 'status' => 'Active']);
 });
 
-test('enrollment honors capacity and drop add remains transactional', function () {
+test('enrollment honors capacity and active enrollments can be dropped', function () {
     $operator = User::factory()->create(['role' => 'Operator']);
     $subject = Subject::query()->create(['subject_code' => 'BIO101', 'subject_name' => 'Biology', 'units' => 3]);
     $fullSection = makeSesSection('BIO-A', $subject->subject_id, 1);
-    $replacement = makeSesSection('BIO-B', $subject->subject_id, 2);
     $student = makeSesStudent('S-2001');
     $anotherStudent = makeSesStudent('S-2002');
     $service = app(EnrollmentService::class);
@@ -143,11 +150,10 @@ test('enrollment honors capacity and drop add remains transactional', function (
     expect(fn () => $service->enroll($anotherStudent->student_id, $fullSection->section_id, $operator->id))
         ->toThrow(ValidationException::class);
 
-    $added = $service->dropAndAdd($original->enrollment_id, $replacement->section_id, $operator->id);
+    $dropped = $service->drop($original->enrollment_id, $operator->id);
 
-    expect($added->section_id)->toBe($replacement->section_id);
+    expect($dropped->status)->toBe('Dropped');
     $this->assertDatabaseHas('enrollments', ['enrollment_id' => $original->enrollment_id, 'status' => 'Dropped']);
-    $this->assertDatabaseHas('enrollments', ['enrollment_id' => $added->enrollment_id, 'status' => 'Enrolled']);
 });
 
 test('section capacity cannot be reduced below current enrollment', function () {
@@ -183,7 +189,7 @@ test('payments require an active enrollment in the same term and an available me
         'student_id' => $student->student_id,
         'school_year' => '2025-2026',
         'semester' => '1st',
-        'amount' => 1250,
+        'amount' => '1250.00',
         'payment_method_id' => $method->payment_method_id,
     ], $operator->id);
 
@@ -194,7 +200,7 @@ test('payments require an active enrollment in the same term and an available me
         'student_id' => $student->student_id,
         'school_year' => '2025-2026',
         'semester' => '1st',
-        'amount' => 500,
+        'amount' => '500.00',
         'payment_method_id' => $method->payment_method_id,
     ], $operator->id))->toThrow(ValidationException::class);
 });

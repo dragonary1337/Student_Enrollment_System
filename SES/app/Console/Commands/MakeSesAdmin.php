@@ -34,7 +34,6 @@ class MakeSesAdmin extends Command
         $user->forceFill([
             'role' => 'Admin',
             'status' => 'Active',
-            'email_verified_at' => $user->email_verified_at ?? now(),
         ])->save();
 
         $this->components->info('Administrator account activated.');

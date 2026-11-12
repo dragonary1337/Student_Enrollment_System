@@ -15,14 +15,12 @@ return new class extends Migration
             $table->enum('role', ['Admin', 'Operator'])->default('Operator')->after('last_name');
             $table->enum('status', ['Pending', 'Active', 'Inactive'])->default('Pending')->after('role');
             $table->timestamp('last_login')->nullable()->after('status');
-            $table->index(['role', 'status'], 'idx_users_role_status');
         });
     }
 
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropIndex('idx_users_role_status');
             $table->dropUnique(['username']);
             $table->dropColumn(['username', 'first_name', 'last_name', 'role', 'status', 'last_login']);
         });

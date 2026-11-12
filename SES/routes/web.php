@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::middleware('active')->group(function () {
         Route::get('dashboard', DashboardController::class)->name('dashboard');
 
@@ -44,7 +44,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::resource('enrollments', EnrollmentController::class)->only(['index', 'create', 'store']);
         Route::post('enrollments/{enrollment}/drop', [EnrollmentController::class, 'drop'])->name('enrollments.drop');
-        Route::post('enrollments/{enrollment}/drop-add', [EnrollmentController::class, 'dropAdd'])->name('enrollments.drop-add');
         Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
         Route::get('payments/create', [PaymentController::class, 'create'])->name('payments.create');
         Route::post('payments', [PaymentController::class, 'store'])->name('payments.store');

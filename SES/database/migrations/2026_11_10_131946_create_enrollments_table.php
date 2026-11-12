@@ -19,7 +19,6 @@ return new class extends Migration
             $table->enum('status', ['Enrolled', 'Dropped', 'Completed'])->default('Enrolled');
             $table->foreignId('processed_by')->nullable()->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->unique(['student_id', 'section_id'], 'uq_enrollments');
-            $table->index(['section_id', 'status'], 'idx_enrollments_section_status');
         });
     }
 

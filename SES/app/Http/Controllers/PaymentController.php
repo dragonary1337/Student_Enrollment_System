@@ -55,7 +55,13 @@ class PaymentController extends Controller
             'payment_method_id' => ['required', 'integer', 'exists:payment_methods,payment_method_id'],
         ]);
 
-        $service->record($data, (int) $request->user()->id);
+        $service->record([
+            'student_id' => (int) $data['student_id'],
+            'school_year' => (string) $data['school_year'],
+            'semester' => (string) $data['semester'],
+            'amount' => (string) $data['amount'],
+            'payment_method_id' => (int) $data['payment_method_id'],
+        ], (int) $request->user()->id);
 
         return redirect()->route('payments.index')->with('success', 'Payment recorded successfully.');
     }

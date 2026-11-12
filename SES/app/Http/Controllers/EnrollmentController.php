@@ -8,7 +8,6 @@ use App\Models\Student;
 use App\Services\EnrollmentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class EnrollmentController extends Controller
@@ -30,7 +29,6 @@ class EnrollmentController extends Controller
 
         return view('enrollments.index', [
             'enrollments' => $query->latest('enrollment_datetime')->paginate(15)->withQueryString(),
-            'replacementSections' => Section::query()->with('subject')->orderBy('section_code')->get(),
         ]);
     }
 
@@ -61,16 +59,5 @@ class EnrollmentController extends Controller
         $service->drop((int) $enrollment->getKey(), (int) $request->user()->id);
 
         return back()->with('success', 'Enrollment dropped successfully.');
-    }
-
-    public function dropAdd(Request $request, Enrollment $enrollment, EnrollmentService $service): RedirectResponse
-    {
-        $data = $request->validate([
-            'section_id' => ['required', 'integer', Rule::exists('sections', 'section_id')],
-        ]);
-
-        $service->dropAndAdd((int) $enrollment->getKey(), (int) $data['section_id'], (int) $request->user()->id);
-
-        return back()->with('success', 'Drop/add completed successfully.');
     }
 }

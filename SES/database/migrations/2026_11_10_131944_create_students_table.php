@@ -25,8 +25,6 @@ return new class extends Migration
             $table->unsignedTinyInteger('year_level');
             $table->enum('status', ['Active', 'Inactive', 'Graduated', 'Dropped'])->default('Active');
             $table->timestamp('date_registered')->useCurrent();
-            $table->index(['last_name', 'first_name'], 'idx_students_name');
-            $table->index('status', 'idx_students_status');
         });
 
         if (DB::getDriverName() === 'mysql') {
